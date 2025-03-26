@@ -8,7 +8,7 @@ const CORS_HEADERS = {
   },
 };
 
-async function retryUntilSuccess(func, maxRetries = 5, delay = 500) {
+async function retryUntilSuccess(func: Function, maxRetries = 5, delay = 500) {
   let retries = 0;
 
   while (retries < maxRetries) {
@@ -37,9 +37,8 @@ async function fetchAndParse(search: string) {
       }
     );
 
-    // Extract data
     const data = await page.evaluate(() => {
-      // Extract text from an element
+      // Extract elements from page
       const elements = document.querySelectorAll(".s-result-item");
       const resultItems = Array.from(elements)
         .map((productElement) => {
@@ -65,7 +64,10 @@ async function fetchAndParse(search: string) {
             imageUrl,
           };
         })
-        .filter(({ price, rating, title }) => price && rating && title);
+        .filter(
+          ({ price, rating, title, imageUrl }) =>
+            price && rating && title && imageUrl
+        );
       return resultItems;
     });
     await browser.close();
